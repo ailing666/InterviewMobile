@@ -2,7 +2,12 @@
   <div id="app">
     <!-- 路由出口 -->
     <router-view></router-view>
-    <van-tabbar route active-color="#95f" inactive-color="#059">
+    <van-tabbar
+      route
+      active-color="#95f"
+      v-show="$route.meta.tabbarShow"
+      inactive-color="#059"
+    >
       <van-tabbar-item
         v-for="(item, index) in $router.options.routes"
         :key="index"
@@ -10,8 +15,9 @@
       >
         <span>{{ item.meta.title }}</span>
         <template #icon>
-          <i class="iconfont" :class="item.meta.icon"></i> </template
-      ></van-tabbar-item>
+          <i class="iconfont" :class="item.meta.icon"></i>
+        </template>
+      </van-tabbar-item>
     </van-tabbar>
   </div>
 </template>

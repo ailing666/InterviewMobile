@@ -14,32 +14,36 @@ const router = new VueRouter({
       path: '/company',
       component: Company,
       meta: {
+        tabbarShow: true,
         title: '公司',
         icon: 'iconicon_footbar_gs_nor'
-      }
-    },
-    {
-      path: '/my',
-      component: My,
-      meta: {
-        title: '刷题',
-        icon: 'iconicon_footbar_st_nor'
-      }
-    },
-    {
-      path: '/find',
-      component: Find,
-      meta: {
-        title: '发现',
-        icon: 'iconicon_liulanliang'
       }
     },
     {
       path: '/question',
       component: Question,
       meta: {
-        title: '我的',
+        tabbarShow: true,
+        title: '刷题',
         icon: 'iconicon_footbar_wode_nor'
+      }
+    },
+    {
+      path: '/find',
+      component: Find,
+      meta: {
+        tabbarShow: true,
+        title: '发现',
+        icon: 'iconicon_liulanliang'
+      }
+    },
+    {
+      path: '/my',
+      component: My,
+      meta: {
+        tabbarShow: true,
+        title: '我的',
+        icon: 'iconicon_footbar_st_nor'
       }
     }
   ]
