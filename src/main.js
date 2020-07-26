@@ -12,7 +12,7 @@ import 'amfe-flexible'
 // 导入字体图标
 import './styles/iconfont.css'
 // 自己的初始化样式
-import './styles/base.less'
+import './styles/var.less'
 // 注册vant
 Vue.use(Vant)
 Vue.config.productionTip = false

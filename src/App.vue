@@ -1,25 +1,30 @@
 <template>
   <div id="app">
-    <div class="box1"></div>
-    <div class="box2"></div>
-    <div class="box3"></div>
-    <div class="box4"></div>
+    <!-- 路由出口 -->
+    <router-view></router-view>
+    <van-tabbar route active-color="#95f" inactive-color="#059">
+      <van-tabbar-item
+        v-for="(item, index) in $router.options.routes"
+        :key="index"
+        :to="item.path"
+      >
+        <span>{{ item.meta.title }}</span>
+        <template #icon>
+          <i class="iconfont" :class="item.meta.icon"></i> </template
+      ></van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
-<script></script>
+<script>
+export default {
+  data () {
+    return {}
+  },
+  created () {
+    window.console.log(this.$router.options)
+  }
+}
+</script>
 
-<style lang="less">
-.box1 {
-  height: 100px;
-  background-color: @bg1;
-}
-.box2 {
-  height: 100px;
-  background-color: @bg2;
-}
-.box3 {
-  height: 100px;
-  background-color: @bg3;
-}
-</style>
+<style lang="less"></style>
