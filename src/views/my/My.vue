@@ -1,17 +1,23 @@
 <template>
   <div class="my">
-    <div class="top">
+    <!-- 顶部区域 -->
+    <div class="my-top">
+      <!-- 顶部电池啊啥的 -->
       <img class="tool" src="@/assets/tool.jpg" alt="" />
-      <div class="user">
+      <!-- 用户信息 -->
+      <div class="user-info">
+        <!-- 左边,用户名 -->
         <div class="username">
           <h3>小艾同学</h3>
           <p>嘤嘤嘤嘤嘤嘤</p>
         </div>
+        <!-- 右边用户头像 -->
         <div>
           <img class="avatar" src="@/assets/avatar.jpg" alt="" />
         </div>
       </div>
-      <div class="data">
+      <!-- 数据区 -->
+      <div class="user-data">
         <ul>
           <li>
             <div class="number">298</div>
@@ -30,28 +36,89 @@
             <p class="info">正确率</p>
           </li>
         </ul>
-        <van-cell-group>
-          <van-cell title="单元格" value="内容" icon="location-o" right-icon />
-        </van-cell-group>
       </div>
+    </div>
+    <!-- 主题区域 -->
+    <div class="my-main">
+      <!-- 我的岗位 -->
+      <div class="gangwei">
+        <AlCell
+          title="我的岗位"
+          icon="iconfont iconicon_mine_gangwei"
+          value="产品经理"
+        ></AlCell>
+      </div>
+      <!-- 面经数据 -->
+      <div class="interview-data">
+        <h5 class="interview-data-title">面经数据</h5>
+        <ul class="interview-data-body">
+          <li>
+            <p class="data-change">昨日阅读<span>+3000</span></p>
+            <div class="data-total-number">555</div>
+            <p class="data-total-info">阅读总数</p>
+          </li>
+          <li>
+            <p class="data-change">昨日获赞<span>+3000</span></p>
+            <div class="data-total-number">555</div>
+            <p class="data-total-info">获赞总数</p>
+          </li>
+          <li>
+            <p class="data-change">昨日新增<span>+3000</span></p>
+            <div class="data-total-number">555</div>
+            <p class="data-total-info">评论总数</p>
+          </li>
+        </ul>
+      </div>
+      <!-- cell区域 -->
+      <van-cell-group class="cell-list">
+        <AlCell
+          title="我的面经分享"
+          icon="iconicon_mine_mianjing"
+          value="21"
+        ></AlCell>
+        <AlCell
+          title="我的消息"
+          icon="iconicon_mine_xiaoxi"
+          value="21"
+        ></AlCell>
+        <AlCell
+          title="收藏的题库"
+          icon="iconicon_mine_tikushoucang"
+          value="21"
+        ></AlCell>
+        <AlCell
+          title="收藏的企业"
+          icon="iconicon_mine_qiyeshoucang"
+          value="21"
+        ></AlCell>
+        <AlCell title="我的错题" icon="iconicon_mine_cuoti" value="21"></AlCell>
+        <AlCell
+          title="收藏的面试经验"
+          icon="iconbtn_shoucang_sel"
+          value="21"
+        ></AlCell>
+      </van-cell-group>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import AlCell from '@/components/AlCell.vue'
+export default {
+  components: { AlCell }
+}
 </script>
 
 <style lang="less">
 .my {
   .tool {
-    height: 44px;
     width: 100%;
   }
-  .top {
+  // 顶部
+  .my-top {
     height: 216px;
     background: linear-gradient(45deg, #ce0031, #b8002c);
-    .user {
+    .user-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -59,24 +126,18 @@ export default {}
       .username {
         h3 {
           font-size: 21px;
-          font-weight: 600;
           text-align: left;
           color: @white-color;
-          letter-spacing: 0px;
           margin: 0;
         }
         p {
           opacity: 0.7;
           font-size: 12px;
-          font-weight: 400;
-          text-align: left;
           color: @white-color;
-          letter-spacing: 0px;
         }
       }
       .avatar {
         height: 50px;
-        width: 50px;
         border-radius: 50%;
         border: 3px solid rgba(255, 255, 255, 0.38);
         img {
@@ -84,34 +145,78 @@ export default {}
         }
       }
     }
-  }
-  .data {
-    ul {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      li {
-        .number {
-          width: 31px;
-          height: 24px;
-          font-size: 21px;
-          font-weight: 700;
-          text-align: center;
-          line-height: 24px;
-          letter-spacing: 0px;
-          color: @white-color;
-        }
-        .info {
-          height: 17px;
-          opacity: 0.7;
-          font-size: 12px;
-          font-weight: 400;
-          text-align: center;
-          color: @white-color;
-          line-height: 17px;
-          letter-spacing: 0px;
+    .user-data {
+      ul {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        li {
+          .number {
+            font-size: 21px;
+            font-weight: 700;
+            color: @white-color;
+          }
+          .info {
+            opacity: 0.7;
+            font-size: 12px;
+            color: @white-color;
+          }
         }
       }
+    }
+  }
+  .my-main {
+    position: relative;
+    padding: 0 15px;
+    background-color: @bg-color;
+    border: 1px solid transparent;
+    .gangwei {
+      position: absolute;
+      top: -15px;
+      width: 345px;
+      .van-cell {
+        border-radius: 10px;
+      }
+    }
+    .interview-data {
+      padding: 10px 15px;
+      margin: 40px 0 10px 0;
+      border-radius: 10px;
+      background-color: @white-color;
+      .interview-data-title {
+        margin: 10px 0;
+      }
+      .interview-data-body {
+        display: flex;
+        justify-content: space-around;
+        border-radius: 10px;
+
+        li {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .data-change {
+            font-size: 10px;
+            color: @minor-font-color;
+            span {
+              color: @assist-color;
+            }
+          }
+          .data-total-number {
+            font-size: 21px;
+            font-weight: 700;
+            color: @main-font-color;
+          }
+          .data-total-info {
+            font-size: 12px;
+            color: @subdominant-font-color;
+          }
+        }
+      }
+    }
+    .cell-list {
+      border-radius: 10px;
+      overflow: hidden;
     }
   }
 }
