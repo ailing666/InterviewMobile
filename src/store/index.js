@@ -4,8 +4,24 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    userInfo: {}
+  },
+  mutations: {
+    SAVEUSERINFO (state, newUserInfo) {
+      state.userInfo = newUserInfo
+    }
+  },
+  getters: {
+    USERAVATAR (state) {
+      return process.env.VUE_APP_URL + state.userInfo.avatar
+    },
+    CORRECTRATE (state) {
+      var totalNum = state.userInfo.submitNum
+      var errNum = state.userInfo.errorNum
+      return (((totalNum - errNum) / totalNum) * 100).toFixed(1)
+    }
+  },
   actions: {},
   modules: {}
 })

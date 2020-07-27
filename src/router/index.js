@@ -4,12 +4,15 @@ import Question from '@/views/question/Question.vue'
 import Find from '@/views/find/Find.vue'
 import My from '@/views/my/My.vue'
 import Company from '@/views/company/Company.vue'
+import Login from '@/views/login/Login.vue'
 Vue.use(VueRouter)
-
-// const routes = []
 
 const router = new VueRouter({
   routes: [
+    {
+      path: '/',
+      redirect: '/find'
+    },
     {
       path: '/company',
       component: Company,
@@ -45,6 +48,10 @@ const router = new VueRouter({
         title: '我的',
         icon: 'iconicon_footbar_st_nor'
       }
+    },
+    {
+      path: '/login',
+      component: Login
     }
   ]
 })

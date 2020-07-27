@@ -8,31 +8,31 @@
       <div class="user-info">
         <!-- 左边,用户名 -->
         <div class="username">
-          <h3>小艾同学</h3>
-          <p>嘤嘤嘤嘤嘤嘤</p>
+          <h3>{{ userInfo.nickname }}</h3>
+          <p>{{ userInfo.intro }}</p>
         </div>
         <!-- 右边用户头像 -->
         <div>
-          <img class="avatar" src="@/assets/avatar.jpg" alt="" />
+          <img class="avatar" :src="USERAVATAR" alt="" />
         </div>
       </div>
       <!-- 数据区 -->
       <div class="user-data">
         <ul>
           <li>
-            <div class="number">298</div>
+            <div class="number">{{ userInfo.submitNum }}</div>
             <p class="info">累计答题</p>
           </li>
           <li>
-            <div class="number">98</div>
+            <div class="number">{{ userInfo.collectQuestions.length }}</div>
             <p class="info">收藏题目</p>
           </li>
           <li>
-            <div class="number">198</div>
+            <div class="number">{{ userInfo.errorNum }}</div>
             <p class="info">我的错题</p>
           </li>
           <li>
-            <div class="number">76%</div>
+            <div class="number">{{ CORRECTRATE }}%</div>
             <p class="info">正确率</p>
           </li>
         </ul>
@@ -45,7 +45,7 @@
         <AlCell
           title="我的岗位"
           icon="iconfont iconicon_mine_gangwei"
-          value="产品经理"
+          :value="userInfo.position"
         ></AlCell>
       </div>
       <!-- 面经数据 -->
@@ -53,18 +53,30 @@
         <h5 class="interview-data-title">面经数据</h5>
         <ul class="interview-data-body">
           <li>
-            <p class="data-change">昨日阅读<span>+3000</span></p>
-            <div class="data-total-number">555</div>
+            <p class="data-change">
+              昨日阅读<span>+{{ userInfo.shareData.read.yesterday }}</span>
+            </p>
+            <div class="data-total-number">
+              {{ userInfo.shareData.read.total }}
+            </div>
             <p class="data-total-info">阅读总数</p>
           </li>
           <li>
-            <p class="data-change">昨日获赞<span>+3000</span></p>
-            <div class="data-total-number">555</div>
+            <p class="data-change">
+              昨日获赞<span>+{{ userInfo.shareData.star.yesterday }}</span>
+            </p>
+            <div class="data-total-number">
+              {{ userInfo.shareData.star.total }}
+            </div>
             <p class="data-total-info">获赞总数</p>
           </li>
           <li>
-            <p class="data-change">昨日新增<span>+3000</span></p>
-            <div class="data-total-number">555</div>
+            <p class="data-change">
+              昨日新增<span>+{{ userInfo.shareData.comment.yesterday }}</span>
+            </p>
+            <div class="data-total-number">
+              {{ userInfo.shareData.comment.total }}
+            </div>
             <p class="data-total-info">评论总数</p>
           </li>
         </ul>
@@ -104,8 +116,13 @@
 
 <script>
 import AlCell from '@/components/AlCell.vue'
+import { mapState, mapGetters } from 'vuex'
 export default {
-  components: { AlCell }
+  components: { AlCell },
+  computed: {
+    ...mapState(['userInfo']),
+    ...mapGetters(['USERAVATAR', 'CORRECTRATE'])
+  }
 }
 </script>
 
@@ -118,6 +135,7 @@ export default {
   .my-top {
     height: 216px;
     background: linear-gradient(45deg, #ce0031, #b8002c);
+    color: @white-color;
     .user-info {
       display: flex;
       justify-content: space-between;
@@ -126,18 +144,16 @@ export default {
       .username {
         h3 {
           font-size: 21px;
-          text-align: left;
-          color: @white-color;
           margin: 0;
         }
         p {
           opacity: 0.7;
           font-size: 12px;
-          color: @white-color;
         }
       }
       .avatar {
         height: 50px;
+        width: 50px;
         border-radius: 50%;
         border: 3px solid rgba(255, 255, 255, 0.38);
         img {
@@ -154,12 +170,10 @@ export default {
           .number {
             font-size: 21px;
             font-weight: 700;
-            color: @white-color;
           }
           .info {
             opacity: 0.7;
             font-size: 12px;
-            color: @white-color;
           }
         }
       }

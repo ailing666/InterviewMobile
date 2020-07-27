@@ -1,17 +1,9 @@
 <template>
-  <van-tabbar v-model="active">
-    <van-tabbar-item name="question" icon="home-o">标签</van-tabbar-item>
-  </van-tabbar>
+  <div class="find">发现</div>
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      active: 'question'
-    }
-  }
-}
+export default {}
 </script>
 
 <style></style>

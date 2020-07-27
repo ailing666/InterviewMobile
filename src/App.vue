@@ -5,11 +5,11 @@
     <van-tabbar
       route
       active-color="#e40137"
-      v-show="$route.meta.tabbarShow"
       inactive-color="#b4b4bd"
+      v-show="$route.meta.tabbarShow"
     >
       <van-tabbar-item
-        v-for="(item, index) in $router.options.routes"
+        v-for="(item, index) in routerOptions"
         :key="index"
         :to="item.path"
       >
@@ -28,8 +28,10 @@ export default {
   data () {
     return {}
   },
-  created () {
-    window.console.log(this.$router.options)
+  computed: {
+    routerOptions () {
+      return this.$router.options.routes.slice(1, 5)
+    }
   }
 }
 </script>
