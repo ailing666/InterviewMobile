@@ -4,9 +4,9 @@
     <router-view></router-view>
     <van-tabbar
       route
-      active-color="#95f"
+      active-color="#e40137"
       v-show="$route.meta.tabbarShow"
-      inactive-color="#059"
+      inactive-color="#b4b4bd"
     >
       <van-tabbar-item
         v-for="(item, index) in $router.options.routes"
@@ -24,6 +24,7 @@
 
 <script>
 export default {
+  name: 'App',
   data () {
     return {}
   },
