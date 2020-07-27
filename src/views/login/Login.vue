@@ -32,7 +32,9 @@
             <i class="iconfont iconyanzhengma"></i>
           </template>
           <template #button>
-            <span @click="getCode">{{ btnText }}</span>
+            <span @click="getCode">{{
+              time === 0 ? '获取验证码' : `${time}s后重新获取`
+            }}</span>
           </template>
         </van-field>
         <p class="link">
@@ -56,7 +58,6 @@ export default {
     return {
       mobile: '',
       code: '',
-      btnText: '获取验证码',
       time: 0
     }
   },
@@ -88,16 +89,12 @@ export default {
         })
         // 设置倒计时时间为30
         this.time = 30
-        // 点击后立即改变按钮文字
-        this.btnText = `${this.time}s后重试`
         // 开启定时器
         const interId = setInterval(() => {
           this.time--
-          this.btnText = `${this.time}s后重试`
-          // 当时间
+          // 当时间到0时
           if (this.time === 0) {
             clearInterval(interId)
-            this.btnText = '重新获取验证码'
           }
         }, 1000)
         getCode({ mobile: this.mobile }).then(res => {
