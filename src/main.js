@@ -16,10 +16,12 @@ import './styles/var.less'
 
 // 全局导入组件
 import AlNavBar from '@/components/AlNavBar.vue'
+import AlCell from '@/components/AlCell.vue'
 // 注册vant
 Vue.use(Vant)
 // 使用全局组件
-Vue.component(AlNavBar.name.AlNavBar)
+Vue.component(AlCell.name, AlCell)
+Vue.component(AlNavBar.name, AlNavBar)
 Vue.config.productionTip = false
 
 new Vue({

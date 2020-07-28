@@ -47,13 +47,11 @@
 </template>
 
 <script>
-import AlNavBar from '@/components/AlNavBar'
 import { getCode, login } from '@/api/login.js'
 import { saveToken } from '@/utils/token.js'
 import { mapMutations } from 'vuex'
 export default {
   name: 'login',
-  components: { AlNavBar },
   data () {
     return {
       mobile: '',

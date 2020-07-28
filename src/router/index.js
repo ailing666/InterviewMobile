@@ -5,6 +5,8 @@ import Find from '@/views/find/Find.vue'
 import My from '@/views/my/My.vue'
 import Company from '@/views/company/Company.vue'
 import Login from '@/views/login/Login.vue'
+import UserInfo from '@/views/userInfo/UserInfo.vue'
+import EditInfo from '@/views/editInfo/EditInfo.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -52,6 +54,14 @@ const router = new VueRouter({
     {
       path: '/login',
       component: Login
+    },
+    {
+      path: '/editInfo',
+      component: EditInfo
+    },
+    {
+      path: '/userInfo',
+      component: UserInfo
     }
   ]
 })

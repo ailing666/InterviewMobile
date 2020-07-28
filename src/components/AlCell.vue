@@ -1,6 +1,9 @@
 <template>
   <div class="alCell">
-    <van-cell :title="title" :value="value">
+    <van-cell :title="title">
+      <template>
+        <slot>{{ value }}</slot>
+      </template>
       <!-- 左侧图标 -->
       <template #icon>
         <i class="iconfont" :class="icon"></i>
@@ -22,7 +25,9 @@ export default {
 
 <style lang="less">
 .alCell {
-  height: 55px;
+  .van-cell {
+    height: 55px;
+  }
   .iconfont {
     font-size: 21px;
   }
