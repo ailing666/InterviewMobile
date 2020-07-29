@@ -60,13 +60,21 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['SAVEUSERINFO']),
+    ...mapMutations(['SAVEUSERINFO', 'SETISLOGIN']),
     // 提交事件
     onSubmit (value) {
       login(value).then(res => {
         saveToken(res.data.jwt)
-        this.$router.push('/my')
         this.SAVEUSERINFO(res.data.user)
+        this.SETISLOGIN(true)
+        // 看看他有没有上一个的redirect
+        if (this.$route.query.redirect) {
+          // 登录成功返回上一页
+          this.$router.push(`${this.$route.query.redirect}`)
+        } else {
+          // 登录失败去发现页
+          this.$router.push('/find')
+        }
       })
     },
     // 点退出图标事件

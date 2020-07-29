@@ -1,5 +1,6 @@
 <template>
-  <div class="userinfo">
+  <div class="user">
+    {{ userInfo }}
     <AlNavBar title="我的资料"></AlNavBar>
     <div class="userinfo-main">
       <div class="user-data">
@@ -10,26 +11,67 @@
         </AlCell>
       </div>
       <div class="user-list">
-        <AlCell title="昵称" value="续命咖啡"></AlCell>
-        <AlCell title="性别" value="男"></AlCell>
-        <AlCell title="地区" value="北京市"></AlCell>
+        <AlCell title="昵称" :value="userInfo.nickname"> </AlCell>
+        <AlCell title="性别" :value="GENDER" @click="changeGender"></AlCell>
+        <AlCell title="地区" :value="userInfo.area"></AlCell>
         <AlCell title="个人简介" value="主任有点懒,什么都没有写"></AlCell>
       </div>
       <van-button class="btn" size="large">退出登录</van-button>
     </div>
+    <van-popup
+      v-model="show"
+      position="buttom"
+      :style="{ height: '40%', width: '100%' }"
+    >
+      <van-picker
+        title="标题"
+        show-toolbar
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="onCancel"
+        @change="onChange"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 export default {
   data () {
-    return {}
+    return {
+      show: false,
+      columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
+      genderObj: {
+        0: '未知',
+        1: '男',
+        2: '女'
+      }
+    }
+  },
+  methods: {
+    changeGender () {
+      this.show = true
+    },
+    onConfirm (value, index) {
+      this.$toast(`当前值：${value}, 当前索引：${index}`)
+    },
+    onChange (picker, value, index) {
+      this.$toast(`当前值：${value}, 当前索引：${index}`)
+    },
+    onCancel () {
+      this.$toast('取消')
+    }
+  },
+  computed: {
+    ...mapState(['userInfo']),
+    ...mapGetters(['USERAVATAR', 'CORRECTRATE', 'GENDER'])
   }
 }
 </script>
 
 <style lang="less">
-.userinfo {
+.user {
   background-color: @bg-color;
   .userinfo-main {
     padding: 0 15px;
@@ -37,6 +79,9 @@ export default {
       margin: 20px 0 10px 0;
       border-radius: 10px;
       overflow: hidden;
+      .van-cell {
+        height: 60px;
+      }
       .avatar {
         width: 40px;
         height: 40px;

@@ -1,6 +1,6 @@
 <template>
   <div class="alCell">
-    <van-cell :title="title">
+    <van-cell :title="title" @click="clickCell">
       <template>
         <slot>{{ value }}</slot>
       </template>
@@ -19,7 +19,12 @@
 <script>
 export default {
   name: 'AlCell',
-  props: ['title', 'value', 'icon']
+  props: ['title', 'value', 'icon'],
+  methods: {
+    clickCell () {
+      this.$emit('click')
+    }
+  }
 }
 </script>
 

@@ -115,10 +115,8 @@
 </template>
 
 <script>
-import AlCell from '@/components/AlCell.vue'
 import { mapState, mapGetters } from 'vuex'
 export default {
-  components: { AlCell },
   computed: {
     ...mapState(['userInfo']),
     ...mapGetters(['USERAVATAR', 'CORRECTRATE'])
