@@ -77,9 +77,15 @@ export default {
         }
       })
     },
-    // 点退出图标事件
+    // 点击左侧返回按钮
     onClickLeft () {
-      window.console.log('屁屁屁')
+      if (this.$route.query.redirect) {
+        // 打过来的 返回发现页
+        this.$router.push('/find')
+      } else {
+        // 是用户直接访问的 直接返回
+        this.$router.go(-1)
+      }
     },
     // 获取验证码
     getCode () {

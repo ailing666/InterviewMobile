@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import area from '@/utils/area.js'
 
 Vue.use(Vuex)
 
@@ -27,13 +28,11 @@ export default new Vuex.Store({
       return (((totalNum - errNum) / totalNum) * 100).toFixed(1)
     },
     GENDER (state) {
-      if (state.userInfo.gender === 0) {
-        return '未知'
-      } else if (state.userInfo.gender === 1) {
-        return '男'
-      } else {
-        return '女'
-      }
+      const genderObj = { 0: '未知', 1: '男', 2: '女' }
+      return genderObj[state.userInfo.gender]
+    },
+    SETAREA (state) {
+      return area.city_list[state.userInfo.area]
     }
   },
   actions: {},

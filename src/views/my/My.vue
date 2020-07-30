@@ -13,7 +13,7 @@
         </div>
         <!-- 右边用户头像 -->
         <div>
-          <img class="avatar" :src="USERAVATAR" alt="" />
+          <img @click="GoUserInfo" class="avatar" :src="USERAVATAR" alt="" />
         </div>
       </div>
       <!-- 数据区 -->
@@ -120,6 +120,11 @@ export default {
   computed: {
     ...mapState(['userInfo']),
     ...mapGetters(['USERAVATAR', 'CORRECTRATE'])
+  },
+  methods: {
+    GoUserInfo () {
+      this.$router.push('/userinfo')
+    }
   }
 }
 </script>

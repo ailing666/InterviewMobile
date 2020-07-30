@@ -32,6 +32,8 @@ export default {
 .alCell {
   .van-cell {
     height: 55px;
+    display: flex;
+    align-items: center;
   }
   .iconfont {
     font-size: 21px;
