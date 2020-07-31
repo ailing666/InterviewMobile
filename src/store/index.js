@@ -15,7 +15,9 @@ export default new Vuex.Store({
     },
     SETISLOGIN (state, value) {
       state.isLogin = value
-      window.console.log('state.isLogin', state.isLogin)
+    },
+    SETPROPVALUE (state, { propName, propValue }) {
+      state.userInfo[propName] = propValue
     }
   },
   getters: {
@@ -23,9 +25,9 @@ export default new Vuex.Store({
       return process.env.VUE_APP_URL + state.userInfo.avatar
     },
     CORRECTRATE (state) {
-      var totalNum = state.userInfo.submitNum
-      var errNum = state.userInfo.errorNum
-      return (((totalNum - errNum) / totalNum) * 100).toFixed(1)
+      const totalNum = state.userInfo.submitNum
+      const errNum = state.userInfo.errorNum
+      return totalNum && (((totalNum - errNum) / totalNum) * 100).toFixed(1)
     },
     GENDER (state) {
       const genderObj = { 0: '未知', 1: '男', 2: '女' }

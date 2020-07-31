@@ -60,13 +60,17 @@ const router = new VueRouter({
       path: '/login',
       component: Login
     },
+
+    {
+      path: '/userInfo',
+      component: UserInfo,
+      meta: {
+        needLogin: true
+      }
+    },
     {
       path: '/editInfo',
       component: EditInfo
-    },
-    {
-      path: '/userInfo',
-      component: UserInfo
     }
   ]
 })

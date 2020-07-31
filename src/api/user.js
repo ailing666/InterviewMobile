@@ -9,3 +9,13 @@ export function getUserInfo () {
     needToken: true
   })
 }
+
+export function editUserInfo (data) {
+  return request({
+    url: '/au/edit',
+    data,
+    method: 'post',
+    // 标记需要携带token
+    needToken: true
+  })
+}
