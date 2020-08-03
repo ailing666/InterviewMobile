@@ -3,28 +3,34 @@
     <AlNavBar title="我的资料" @onClickLeft="backToMy"></AlNavBar>
     <div class="userinfo-main">
       <div class="user-data">
-        <AlCell title="头像">
+        <AlCell title="头像" @click="toEdit('avatar')">
           <template>
             <img class="avatar" :src="USERAVATAR" alt="" />
           </template>
         </AlCell>
       </div>
       <div class="user-list">
-        <AlCell title="昵称" :value="userInfo.nickname"> </AlCell>
+        <AlCell
+          title="昵称"
+          :value="userInfo.nickname"
+          @click="toEdit('nickname')"
+        >
+        </AlCell>
         <AlCell
           title="性别"
           :value="GENDER"
           @click="isShowGender = true"
         ></AlCell>
         <AlCell
-          class="intro"
-          title="个人简介"
-          value="主任有点懒,什么都没有写"
-        ></AlCell>
-        <AlCell
           title="地区"
           :value="SETAREA"
           @click="isShowArea = true"
+        ></AlCell>
+        <AlCell
+          class="intro"
+          title="个人简介"
+          :value="userInfo.intro"
+          @click="toEdit('intro')"
         ></AlCell>
       </div>
       <van-button class="btn" @click="loginOut" type="default" size="large"
@@ -82,6 +88,9 @@ export default {
     ...mapMutations(['SAVEUSERINFO', 'SETISLOGIN', 'SETPROPVALUE']),
     backToMy () {
       this.$router.push('/my')
+    },
+    toEdit (prop) {
+      this.$router.push(`editinfo?prop=${prop}`)
     },
     // 退出事件
     loginOut () {

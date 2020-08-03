@@ -9,7 +9,7 @@ export function getUserInfo () {
     needToken: true
   })
 }
-
+// 修改用户信息
 export function editUserInfo (data) {
   return request({
     url: '/au/edit',
@@ -17,5 +17,15 @@ export function editUserInfo (data) {
     method: 'post',
     // 标记需要携带token
     needToken: true
+  })
+}
+export function uploadFile (file) {
+  const formData = new FormData()
+  formData.append('files', file)
+  return request({
+    url: '/upload',
+    method: 'post',
+    needToken: 'token',
+    data: formData
   })
 }

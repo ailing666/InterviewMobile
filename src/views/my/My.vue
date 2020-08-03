@@ -46,6 +46,7 @@
           title="我的岗位"
           icon="iconfont iconicon_mine_gangwei"
           :value="userInfo.position"
+          @click="$router.push('/editInfo?prop=position')"
         ></AlCell>
       </div>
       <!-- 面经数据 -->

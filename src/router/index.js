@@ -7,10 +7,13 @@ import Company from '@/views/company/Company.vue'
 import Login from '@/views/login/Login.vue'
 import UserInfo from '@/views/userInfo/UserInfo.vue'
 import EditInfo from '@/views/editInfo/EditInfo.vue'
+import ShareList from '@/views/shareList/ShareList'
+import ShareSearch from '@/views/shareSearch/ShareSearch'
 import store from '@/store/index.js'
 import { getToken, removeToken } from '@/utils/token.js'
 import { getUserInfo } from '@/api/user.js'
 import { Toast } from 'vant'
+
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -60,7 +63,14 @@ const router = new VueRouter({
       path: '/login',
       component: Login
     },
-
+    {
+      path: '/shareList',
+      component: ShareList
+    },
+    {
+      path: '/shareSearch',
+      component: ShareSearch
+    },
     {
       path: '/userInfo',
       component: UserInfo,
@@ -70,7 +80,10 @@ const router = new VueRouter({
     },
     {
       path: '/editInfo',
-      component: EditInfo
+      component: EditInfo,
+      meta: {
+        needLogin: true
+      }
     }
   ]
 })

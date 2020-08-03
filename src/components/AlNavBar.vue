@@ -4,7 +4,6 @@
       :title="title"
       :left-text="leftText"
       :right-text="rightText"
-      left-arrow
       @click-left="onClickLeft"
       @click-right="onClickRight"
     >
@@ -24,7 +23,18 @@
 <script>
 export default {
   name: 'AlNavBar',
-  props: ['title', 'leftText', 'rightText'],
+  props: {
+    title: {
+      type: String
+    },
+    leftText: {
+      type: String
+    },
+    rightText: {
+      type: String
+    }
+
+  },
   methods: {
     onClickLeft () {
       this.$emit('onClickLeft')
