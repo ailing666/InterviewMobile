@@ -1,7 +1,7 @@
 <template>
   <div class="experience-list-container">
     <div class="top-box">
-      <AlNavBar title="面试技巧"></AlNavBar>
+      <AlNavBar title="面试技巧" @clickLeft="this.$router.push('/find')"></AlNavBar>
       <div class="search-box">
         <div class="content">
           <i class="iconfont iconicon_search"></i> 请输入关键字
@@ -41,14 +41,20 @@ export default {
     onLoad () {
       shareList({ start: this.start, limit: this.limit }).then(res => {
         res.data.list.forEach(item => {
+          // 处理用户头像
           item.author.avatar && (item.author.avatar = process.env.VUE_APP_URL + item.author.avatar)
         })
+        // 搜索列表添加返回的数据
         this.shareList.push(...res.data.list)
+        window.console.log('shareList', this.shareList)
+        // 搜索起始页+页容量
         this.start += this.limit
+        // 当长度超过时停止加载
         if (this.shareList.length >= res.data.total) {
           // 停止继续加载
           this.finished = true
         }
+        // 取消加载
         this.loading = false
       })
     }

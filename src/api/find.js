@@ -3,7 +3,7 @@ import request from '@/utils/request'
 
 // 面试技巧
 
-function technicList (params) {
+export function technicList (params) {
   return request({
     url: '/articles/technic',
     method: 'get',
@@ -12,7 +12,7 @@ function technicList (params) {
   })
 }
 // 热门数据
-function hotData () {
+export function hotData () {
   return request({
     url: '/chart-data/hot',
     method: 'get'
@@ -20,7 +20,7 @@ function hotData () {
 }
 
 // 面经分享
-function shareList (params) {
+export function shareList (params) {
   return request({
     url: '/articles/share',
     method: 'get',
@@ -35,5 +35,3 @@ export function shareTopSearch () {
     url: '/articles/shareTopSearch'
   })
 }
-// 暴露出去
-export { technicList, hotData, shareList }

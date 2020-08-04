@@ -1,7 +1,8 @@
 <template>
   <div class="item van-hairline--bottom" >
-    <h3>{{item.title}}</h3>
-    <div class="desc">{{item.content}}</div>
+<!--    点击跳转携带id-->
+    <h3 v-html="item.title" @click="$router.push(`/shareDetail/${item.id}`)"></h3>
+    <div class="desc" @click="$router.push(`/shareDetail/${item.id}`)">{{item.content}}</div>
     <div class="detail-box">
       <div class="user">
         <img :src="item.author.avatar" alt="" />
@@ -52,6 +53,9 @@ export default {
           overflow: hidden;
           font-size: 14px;
           font-weight: 600;
+            span {
+              color: @main-color;
+            }
         }
         .desc {
           font-size: 12px;

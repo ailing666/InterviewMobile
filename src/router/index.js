@@ -9,6 +9,7 @@ import UserInfo from '@/views/userInfo/UserInfo.vue'
 import EditInfo from '@/views/editInfo/EditInfo.vue'
 import ShareList from '@/views/shareList/ShareList'
 import ShareSearch from '@/views/shareSearch/ShareSearch'
+import ShareDetail from '@/views/shareDetail/ShareDetail'
 import store from '@/store/index.js'
 import { getToken, removeToken } from '@/utils/token.js'
 import { getUserInfo } from '@/api/user.js'
@@ -70,6 +71,11 @@ const router = new VueRouter({
     {
       path: '/shareSearch',
       component: ShareSearch
+    },
+    {
+      // 动态匹配路由
+      path: '/shareDetail/:id',
+      component: ShareDetail
     },
     {
       path: '/userInfo',

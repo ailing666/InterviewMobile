@@ -82,7 +82,7 @@
       </div>
       <!-- 面经分享 -->
       <div class="share-container">
-        <AlCell title="面经分享" value="查看更多"> </AlCell>
+        <AlCell title="面经分享" value="查看更多" @click="$router.push('/sharesearch')"> </AlCell>
         <div class="share-content">
           <div class="list" >
             <AlItem v-for="item in shareList" :key="item.id" :item="item"></AlItem>
