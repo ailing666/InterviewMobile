@@ -1,9 +1,9 @@
 <template>
     <div class="shareDetail">
     <!-- 导航栏 -->
-    <AlNavBar></AlNavBar>
+    <AlNavBar @onClickLeft="$router.push('/find')"></AlNavBar>
     <!-- 骨架屏 -->
-      <van-skeleton title avatar :row="20" v-if="shareDetail === ''"></van-skeleton>
+    <van-skeleton title avatar :row="20" v-if="shareDetail === ''"></van-skeleton>
     <!-- 顶部 -->
    <template v-else>
            <router-view></router-view>
@@ -27,71 +27,43 @@
       <!-- 顶部评论 -->
       <div class="title">评论 <span class="num">68</span></div>
       <!-- 每一项 -->
-      <div class="comment">
+      <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
+      >
+      <div class="comment" v-for="item in commentsList" :key="item.id">
         <!-- 姓名 点赞区域 -->
         <div class="info-box">
-          <img src="../../assets/logo.png" alt="" />
+          <img :src="item.author.avatar && item.author.avatar" alt="" />
           <div class="name-box">
-            <span class="name">浩子</span>
-            <span class="time">3小时前</span>
+            <span class="name" @click="showPop(item)">{{ item.author.nickname }}</span>
+            <span class="time">{{item.created_at}}</span>
           </div>
           <div class="zan-box">
-            <span>68</span>
+            <span>{{item.star}}</span>
             <i class="iconfont iconbtn_dianzan_small_nor"></i>
           </div>
         </div>
         <!-- 评论内容 -->
         <div class="content-box">
-          <div class="content">点赞，很有收获呢</div>
-          <div class="reply-box">
+          <div class="content">{{item.content}}</div>
+          <div class="reply-box" v-for="it in item.children_comments" :key="it.id">
             <div class="reply">
-              <span class="name">小李:</span>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta
-              velit ex accusantium enim cupiditate nostrum quibusdam nemo, iure
-              modi quod fugit quasi rerum inventore eaque hic minima sunt
-              voluptatibus mollitia!
-            </div>
-            <div class="reply">
-              <span class="name">小黑:</span>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta
+              <span class="name">{{it.author}}</span>
+              {{it.content}}
             </div>
           </div>
         </div>
         <!-- 回复评论 -->
       </div>
+        </van-list>
       <div class="comment">
-        <!-- 姓名 点赞区域 -->
-        <div class="info-box">
-          <img src="../../assets/logo.png" alt="" />
-          <div class="name-box">
-            <span class="name">浩子</span>
-            <span class="time">3小时前</span>
-          </div>
-          <div class="zan-box">
-            <span>68</span>
-            <i class="iconfont iconbtn_dianzan_small_nor"></i>
-          </div>
-        </div>
-        <!-- 评论内容 -->
-        <div class="content-box">
-          <div class="content">点赞，很有收获呢</div>
-          <div class="reply-box">
-            <div class="reply">
-              <span class="name">小李:</span>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta
-              velit ex accusantium enim cupiditate nostrum quibusdam nemo, iure
-              modi quod fugit quasi rerum inventore eaque hic minima sunt
-              voluptatibus mollitia!
-            </div>
-            <div class="reply">
-              <span class="name">小黑:</span>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta
-            </div>
-          </div>
-        </div>
         <!-- 底部盒子 -->
         <div class="bottom-box">
-          <div class="input" @click="show = true">我来补充两句</div>
+<!--          弹出评论框-->
+          <div class="input" @click="showPop()">我来补充两句</div>
           <div class="shoucang">
             <i class="iconfont iconbtn_shoucang_nor"></i>
             234
@@ -105,7 +77,10 @@
             998
           </div>
         </div>
-        <!-- 底部回复弹出层 -->
+
+      </div>
+    </div>
+              <!-- 底部回复弹出层 -->
         <van-popup
           class="input-pop"
           v-model="show"
@@ -117,10 +92,10 @@
             type="textarea"
             autofocus
             v-model="value"
-            placeholder="请输入用户名"
+            :placeholder="placeholder"
             rows="4"
           />
-          <span>发送</span>
+          <span @click="submit">发送</span>
         </van-popup>
         <!-- 分享弹出层 -->
         <van-popup v-model="showShare">
@@ -145,29 +120,77 @@
             </div>
           </div>
         </van-popup>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import { shareDetail } from '@/api/detail'
+import { shareDetail, commentsDetail } from '@/api/detail'
 
 export default {
   name: 'ShareDetail',
   data () {
     return {
+      // 弹出框是否显示
       show: false,
       showShare: false,
+      // 弹出框对应的value
       value: '',
-      shareDetail: ''
+      // 分享详情数组
+      shareDetail: '',
+      // 是否加载
+      loading: false,
+      // 加载完成
+      finished: false,
+      // 获取数据起始索引
+      start: 0,
+      // 获取数据页容量
+      limit: 5,
+      // 评论列表
+      commentsList: [],
+      // placeholder占位符
+      placeholder: '我来补充两句'
     }
   },
   created () {
+    // 将id作为参数调用接口
     shareDetail(this.$route.params.id).then(res => {
       res.data.author.avatar && (res.data.author.avatar = process.env.VUE_APP_URL + res.data.author.avatar)
       this.shareDetail = res.data
     })
+  },
+  methods: {
+    // 加载事件
+    onLoad () {
+      commentsDetail({ id: this.$route.params.id, start: this.start, limit: this.limit }).then(res => {
+        res.data.list.forEach(item => {
+          // 处理头像
+          item.author.avatar && (item.author.avatar = process.env.VUE_APP_URL + item.author.avatar)
+        })
+        // 追加数据
+        this.commentsList.push(...res.data.list)
+        //  关闭loading
+        this.loading = false
+        //  累加页码
+        this.start += this.limit
+        //  判断是否结束
+        this.commentsList.length >= res.data.total && (this.finished = true)
+      })
+    },
+    // 弹出评论框
+    showPop (item) {
+      // 显示弹出框
+      this.show = true
+      // 修改对应的placeholder
+      item ? this.placeholder = `回复: ${item.author.nickname}` : this.placeholder = '我来补充两句'
+    },
+    // 发送评论
+    submit () {
+      this.$isLogin().then(() => {
+        window.console.log('耶')
+      }).catch(() => {
+        window.console.log('呜呜呜')
+      })
+    }
   }
 }
 </script>

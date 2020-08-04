@@ -16,17 +16,15 @@ import '@/styles/common.css'
 import '@/styles/var.less'
 // 导入moment
 import moment from 'moment'
+// 导入全局抽取的插件
+import myPlugin from './plugin/index'
 // 导入自己抽取的全局组件注册插件
 import globalCom from './components/index'
-// 全局导入组件
-import AlNavBar from '@/components/AlNavBar.vue'
-import AlCell from '@/components/AlCell.vue'
+
 // 注册vant
 Vue.use(Vant)
 Vue.use(globalCom)
-// 使用全局组件
-Vue.component(AlCell.name, AlCell)
-Vue.component(AlNavBar.name, AlNavBar)
+Vue.use(myPlugin)
 Vue.filter('formatTime', value => {
   value = value.slice(0, value.length - 2)
   //  计算时间差
