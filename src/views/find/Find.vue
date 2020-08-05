@@ -82,10 +82,19 @@
       </div>
       <!-- 面经分享 -->
       <div class="share-container">
-        <AlCell title="面经分享" value="查看更多" @click="$router.push('/sharesearch')"> </AlCell>
+        <AlCell
+          title="面经分享"
+          value="查看更多"
+          @click="$router.push('/sharesearch')"
+        >
+        </AlCell>
         <div class="share-content">
-          <div class="list" >
-            <AlItem v-for="item in shareList" :key="item.id" :item="item"></AlItem>
+          <div class="list">
+            <AlItem
+              v-for="item in shareList"
+              :key="item.id"
+              :item="item"
+            ></AlItem>
           </div>
         </div>
       </div>
@@ -193,7 +202,7 @@ export default {
     .technic-list {
       padding: 0 15px;
       background: @white-color;
-     .item {
+      .item {
         display: flex;
         align-items: center;
         margin-bottom: 15px;
@@ -331,12 +340,13 @@ export default {
     }
   }
   // 面经分享
-    .share-container {
+  .share-container {
     background: @white-color;
     .share-content {
       padding: 0 15px;
     }
-    .list {}
+    .list {
     }
+  }
 }
 </style>

@@ -1,25 +1,30 @@
 <template>
-    <div class="shareDetail">
+  <div class="shareDetail">
     <!-- 导航栏 -->
     <AlNavBar @onClickLeft="$router.push('/find')"></AlNavBar>
     <!-- 骨架屏 -->
-    <van-skeleton title avatar :row="20" v-if="shareDetail === ''"></van-skeleton>
+    <van-skeleton
+      title
+      avatar
+      :row="20"
+      v-if="shareDetail === ''"
+    ></van-skeleton>
     <!-- 顶部 -->
-   <template v-else>
-           <router-view></router-view>
+    <template v-else>
+      <router-view></router-view>
       <div class="top-box">
-      <div class="title">
-        {{ shareDetail.title }}
-      </div>
-      <div class="info-box">
-        <img :src="shareDetail.author.avatar" alt="" />
-        <div class="name-box">
-          <span class="name">{{shareDetail.author.nickname}}</span>
-          <span class="time">{{shareDetail.created_at | formatTime}}</span>
+        <div class="title">
+          {{ shareDetail.title }}
+        </div>
+        <div class="info-box">
+          <img :src="shareDetail.author.avatar" alt="" />
+          <div class="name-box">
+            <span class="name">{{ shareDetail.author.nickname }}</span>
+            <span class="time">{{ shareDetail.created_at | formatTime }}</span>
+          </div>
         </div>
       </div>
-    </div>
-   </template>
+    </template>
     <!-- 内容 -->
     <div class="experience-content" v-html="shareDetail.content"></div>
     <!-- 评论 -->
@@ -28,41 +33,47 @@
       <div class="title">评论 <span class="num">68</span></div>
       <!-- 每一项 -->
       <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
       >
-      <div class="comment" v-for="item in commentsList" :key="item.id">
-        <!-- 姓名 点赞区域 -->
-        <div class="info-box">
-          <img :src="item.author.avatar && item.author.avatar" alt="" />
-          <div class="name-box">
-            <span class="name" @click="showPop(item)">{{ item.author.nickname }}</span>
-            <span class="time">{{item.created_at}}</span>
-          </div>
-          <div class="zan-box">
-            <span>{{item.star}}</span>
-            <i class="iconfont iconbtn_dianzan_small_nor"></i>
-          </div>
-        </div>
-        <!-- 评论内容 -->
-        <div class="content-box">
-          <div class="content">{{item.content}}</div>
-          <div class="reply-box" v-for="it in item.children_comments" :key="it.id">
-            <div class="reply">
-              <span class="name">{{it.author}}</span>
-              {{it.content}}
+        <div class="comment" v-for="item in commentsList" :key="item.id">
+          <!-- 姓名 点赞区域 -->
+          <div class="info-box">
+            <img :src="item.author.avatar && item.author.avatar" alt="" />
+            <div class="name-box">
+              <span class="name" @click="showPop(item)">{{
+                item.author.nickname
+              }}</span>
+              <span class="time">{{ item.created_at }}</span>
+            </div>
+            <div class="zan-box">
+              <span>{{ item.star }}</span>
+              <i class="iconfont iconbtn_dianzan_small_nor"></i>
             </div>
           </div>
+          <!-- 评论内容 -->
+          <div class="content-box">
+            <div class="content">{{ item.content }}</div>
+            <div
+              class="reply-box"
+              v-for="it in item.children_comments"
+              :key="it.id"
+            >
+              <div class="reply">
+                <span class="name">{{ it.author }}</span>
+                {{ it.content }}
+              </div>
+            </div>
+          </div>
+          <!-- 回复评论 -->
         </div>
-        <!-- 回复评论 -->
-      </div>
-        </van-list>
+      </van-list>
       <div class="comment">
         <!-- 底部盒子 -->
         <div class="bottom-box">
-<!--          弹出评论框-->
+          <!--弹出评论框-->
           <div class="input" @click="showPop()">我来补充两句</div>
           <div class="shoucang">
             <i class="iconfont iconbtn_shoucang_nor"></i>
@@ -77,54 +88,53 @@
             998
           </div>
         </div>
-
       </div>
     </div>
-              <!-- 底部回复弹出层 -->
-        <van-popup
-          class="input-pop"
-          v-model="show"
-          position="bottom"
-          :style="{ height: '24%' }"
-        >
-          <van-field
-            autosize
-            type="textarea"
-            autofocus
-            v-model="value"
-            :placeholder="placeholder"
-            rows="4"
-          />
-          <span @click="submit">发送</span>
-        </van-popup>
-        <!-- 分享弹出层 -->
-        <van-popup v-model="showShare">
-          <div class="share-box">
-            <div class="text">
-              长按图片下载并分享
-            </div>
-            <div class="share-content-box">
-              <div class="title">
-                拿到百度音乐的offer后，我总结了面试产品实习的几点经验
-              </div>
-              <div class="user-box">
-                <img src="../../assets/logo.png" alt="" />
-                <span>热爱生活</span>
-              </div>
-              <div class="content">
-                先说一下我的基本情况，本人是北京大学前沿交叉学院数据科学专业研一学生，本科在兰州大学信息安全专业。之所以选择走产品而不是技术，代码能力马马虎虎，而且对编程不感兴趣，最关键的是我性格比较外向，比起每天闷头敲代码，更喜欢和人打交道。于是乎，我开始从各种渠道了解产品经理的前世今生，从《人人都是产品经理》这本书和人人都是产品经理社区，再到知乎，了解到了很多笼统的概念，但是感觉如果没有亲身经历，理论和框架就显得很空洞，而且产品不像技术，门槛相对略低，所以更需要实习的经历，再加上本科的时候从未有过实习经历，所以我很迫切的想找一份产品实习。在面试了滴滴出行、回家吃饭和百度音乐之后，拿到了后面两家的Offer，最终选择了百度音乐。
-              </div>
-              <img class="logo" src="../../assets/logo.png" alt="" />
-              <img class="code" src="../../assets/logo.png" alt="" />
-              <div class="direction">长按识别二维码查看原文</div>
-            </div>
+    <!-- 底部回复弹出层 -->
+    <van-popup
+      class="input-pop"
+      v-model="show"
+      position="bottom"
+      :style="{ height: '24%' }"
+    >
+      <van-field
+        autosize
+        type="textarea"
+        autofocus
+        v-model="value"
+        :placeholder="placeholder"
+        rows="4"
+      />
+      <span @click="submit">发送</span>
+    </van-popup>
+    <!-- 分享弹出层 -->
+    <van-popup v-model="showShare">
+      <div class="share-box">
+        <div class="text">
+          长按图片下载并分享
+        </div>
+        <div class="share-content-box">
+          <div class="title">
+            拿到百度音乐的offer后，我总结了面试产品实习的几点经验
           </div>
-        </van-popup>
+          <div class="user-box">
+            <img src="../../assets/logo.png" alt="" />
+            <span>热爱生活</span>
+          </div>
+          <div class="content">
+            先说一下我的基本情况，本人是北京大学前沿交叉学院数据科学专业研一学生，本科在兰州大学信息安全专业。之所以选择走产品而不是技术，代码能力马马虎虎，而且对编程不感兴趣，最关键的是我性格比较外向，比起每天闷头敲代码，更喜欢和人打交道。于是乎，我开始从各种渠道了解产品经理的前世今生，从《人人都是产品经理》这本书和人人都是产品经理社区，再到知乎，了解到了很多笼统的概念，但是感觉如果没有亲身经历，理论和框架就显得很空洞，而且产品不像技术，门槛相对略低，所以更需要实习的经历，再加上本科的时候从未有过实习经历，所以我很迫切的想找一份产品实习。在面试了滴滴出行、回家吃饭和百度音乐之后，拿到了后面两家的Offer，最终选择了百度音乐。
+          </div>
+          <img class="logo" src="../../assets/logo.png" alt="" />
+          <img class="code" src="../../assets/logo.png" alt="" />
+          <div class="direction">长按识别二维码查看原文</div>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { shareDetail, commentsDetail } from '@/api/detail'
+import { shareDetail, commentsDetail, sendComment } from '@/api/detail'
 
 export default {
   name: 'ShareDetail',
@@ -148,23 +158,29 @@ export default {
       // 评论列表
       commentsList: [],
       // placeholder占位符
-      placeholder: '我来补充两句'
+      placeholder: '我来补充两句',
+      // 回复的评论数据对象
+      parentComment: ''
     }
   },
   created () {
     // 将id作为参数调用接口
     shareDetail(this.$route.params.id).then(res => {
-      res.data.author.avatar && (res.data.author.avatar = process.env.VUE_APP_URL + res.data.author.avatar)
+      this.$avatar(res.data.author)
       this.shareDetail = res.data
     })
   },
   methods: {
     // 加载事件
     onLoad () {
-      commentsDetail({ id: this.$route.params.id, start: this.start, limit: this.limit }).then(res => {
+      commentsDetail({
+        id: this.$route.params.id,
+        start: this.start,
+        limit: this.limit
+      }).then(res => {
         res.data.list.forEach(item => {
           // 处理头像
-          item.author.avatar && (item.author.avatar = process.env.VUE_APP_URL + item.author.avatar)
+          this.$avatar(item.author)
         })
         // 追加数据
         this.commentsList.push(...res.data.list)
@@ -178,18 +194,52 @@ export default {
     },
     // 弹出评论框
     showPop (item) {
+      // 保存回复评论的对象
+      this.parentComment = item
       // 显示弹出框
       this.show = true
       // 修改对应的placeholder
-      item ? this.placeholder = `回复: ${item.author.nickname}` : this.placeholder = '我来补充两句'
+      item
+        ? (this.placeholder = `回复: ${item.author.nickname}`)
+        : (this.placeholder = '我来补充两句')
     },
     // 发送评论
     submit () {
-      this.$isLogin().then(() => {
-        window.console.log('耶')
-      }).catch(() => {
-        window.console.log('呜呜呜')
-      })
+      this.$isLogin()
+        .then(() => {
+          // 登录了
+          const data = {
+            content: this.value
+          }
+          // 根据是否有parentComment 生成数据对象
+          this.parentComment
+            ? (data.parent = this.parentComment.id)
+            : (data.article = this.$route.params.id)
+          // 调用接口
+          sendComment(data).then(res => {
+            // 根据data中的参数判断是回复别人还是评价文章
+            if (res.data.parent) {
+              // 添加到父评论中
+              this.parentComment.children_comments.push(res.data)
+              // 清空父评论
+              this.parentComment = ''
+            } else {
+              this.$avatar(res.data.author)
+              // 追加到数组的顶端
+              this.commentsList.unshift(res.data)
+            }
+            // 提示用户成功
+            this.$toast.success('发表成功')
+            // 关闭框框
+            this.show = false
+            // 清空输入框
+            this.value = ''
+          })
+        })
+        .catch(() => {
+          // 没登录
+          window.console.log('没登录')
+        })
     }
   }
 }
@@ -344,6 +394,7 @@ export default {
   .input-pop {
     padding: 25px 15px 0;
     overflow: hidden;
+    box-sizing: border-box;
     // 弹出层
     .van-cell::after {
       border-bottom: none;

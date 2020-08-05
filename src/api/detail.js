@@ -12,7 +12,17 @@ export function commentsDetail (params) {
     url: `/articles/comments/${id}`,
     // 赋值
     params: {
-      start, limit
+      start,
+      limit
     }
+  })
+} // 面经发表评论
+export function sendComment (data) {
+  // 解构
+  return request({
+    url: '/articles/comments',
+    method: 'post',
+    needToken: true,
+    data
   })
 }

@@ -17,15 +17,18 @@ import '@/styles/var.less'
 // 导入moment
 import moment from 'moment'
 // 导入全局抽取的插件
-import myPlugin from './plugin/index'
+import myLogin from './plugin/login'
+import myAvatar from './plugin/avatar'
 // 导入自己抽取的全局组件注册插件
 import globalCom from './components/index'
 
 // 注册vant
 Vue.use(Vant)
 Vue.use(globalCom)
-Vue.use(myPlugin)
+Vue.use(myLogin)
+Vue.use(myAvatar)
 Vue.filter('formatTime', value => {
+  moment.locale('zh-cn')
   value = value.slice(0, value.length - 2)
   //  计算时间差
   const detayTime = moment().diff(moment(value), 'days')
