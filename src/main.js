@@ -29,7 +29,7 @@ Vue.use(myLogin)
 Vue.use(myAvatar)
 Vue.filter('formatTime', value => {
   moment.locale('zh-cn')
-  value = value.slice(0, value.length - 2)
+  // value = value.slice(0, value.length - 2)
   //  计算时间差
   const detayTime = moment().diff(moment(value), 'days')
   if (detayTime > 1) {

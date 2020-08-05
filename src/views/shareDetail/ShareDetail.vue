@@ -38,7 +38,12 @@
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <div class="comment" v-for="item in commentsList" :key="item.id">
+        <div
+          class="comment"
+          v-show="item.content !== ''"
+          v-for="item in commentsList"
+          :key="item.id"
+        >
           <!-- 姓名 点赞区域 -->
           <div class="info-box">
             <img :src="item.author.avatar && item.author.avatar" alt="" />
@@ -46,7 +51,7 @@
               <span class="name" @click="showPop(item)">{{
                 item.author.nickname
               }}</span>
-              <span class="time">{{ item.created_at }}</span>
+              <span class="time">{{ item.created_at | formatTime }}</span>
             </div>
             <div class="zan-box">
               <span>{{ item.star }}</span>
@@ -55,7 +60,9 @@
           </div>
           <!-- 评论内容 -->
           <div class="content-box">
-            <div class="content">{{ item.content }}</div>
+            <div class="content">
+              {{ item.content }}
+            </div>
             <div
               class="reply-box"
               v-for="it in item.children_comments"
@@ -204,42 +211,44 @@ export default {
         : (this.placeholder = '我来补充两句')
     },
     // 发送评论
-    submit () {
-      this.$isLogin()
-        .then(() => {
-          // 登录了
-          const data = {
-            content: this.value
+    async submit () {
+      try {
+        await this.$isLogin()
+        // 登录了
+        const data = {
+          content: this.value
+        }
+        // 根据是否有parentComment 生成数据对象
+        this.parentComment
+          ? (data.parent = this.parentComment.id)
+          : (data.article = this.$route.params.id)
+        // 调用接口
+        if (data.content !== '') {
+          const res = await sendComment(data)
+          // 根据data中的参数判断是回复别人还是评价文章
+          if (res.data.parent) {
+            // 添加到父评论中
+            this.parentComment.children_comments.push(res.data)
+            // 清空父评论
+            this.parentComment = ''
+          } else {
+            this.$avatar(res.data.author)
+            // 追加到数组的顶端
+            this.commentsList.unshift(res.data)
           }
-          // 根据是否有parentComment 生成数据对象
-          this.parentComment
-            ? (data.parent = this.parentComment.id)
-            : (data.article = this.$route.params.id)
-          // 调用接口
-          sendComment(data).then(res => {
-            // 根据data中的参数判断是回复别人还是评价文章
-            if (res.data.parent) {
-              // 添加到父评论中
-              this.parentComment.children_comments.push(res.data)
-              // 清空父评论
-              this.parentComment = ''
-            } else {
-              this.$avatar(res.data.author)
-              // 追加到数组的顶端
-              this.commentsList.unshift(res.data)
-            }
-            // 提示用户成功
-            this.$toast.success('发表成功')
-            // 关闭框框
-            this.show = false
-            // 清空输入框
-            this.value = ''
-          })
-        })
-        .catch(() => {
-          // 没登录
-          window.console.log('没登录')
-        })
+          // 提示用户成功
+          this.$toast.success('发表成功')
+          // 关闭框框
+          this.show = false
+          // 清空输入框
+          this.value = ''
+        } else {
+          this.$toast.fail('你没写东西呀')
+        }
+      } catch {
+        // 没登录
+        window.console.log('没登录')
+      }
     }
   }
 }
