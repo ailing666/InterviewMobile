@@ -53,9 +53,13 @@
               }}</span>
               <span class="time">{{ item.created_at | formatTime }}</span>
             </div>
-            <div class="zan-box">
-              <span>{{ item.star }}</span>
-              <i class="iconfont iconbtn_dianzan_small_nor"></i>
+            <!-- 点赞 -->
+            <div class="zan-box" @click="starArticle(item)">
+              <span>{{ item.star || 0 }}</span>
+              <i
+                class="iconfont iconbtn_dianzan_small_nor"
+                :class="{ actived: isComment }"
+              ></i>
             </div>
           </div>
           <!-- 评论内容 -->
@@ -86,8 +90,11 @@
             <i class="iconfont iconbtn_shoucang_nor"></i>
             234
           </div>
-          <div class="star">
-            <i class="iconfont iconbtn_dianzan_small_nor"></i>
+          <div class="star" @click="starArticle()">
+            <i
+              class="iconfont iconbtn_dianzan_small_nor"
+              :class="{ actived: isStar }"
+            ></i>
             125
           </div>
           <div class="share" @click="showShare = true">
@@ -141,8 +148,14 @@
 </template>
 
 <script>
-import { shareDetail, commentsDetail, sendComment } from '@/api/detail'
-
+import {
+  shareDetail,
+  commentsDetail,
+  sendComment,
+  starArticle,
+  starComment
+} from '@/api/detail'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'ShareDetail',
   data () {
@@ -167,7 +180,8 @@ export default {
       // placeholder占位符
       placeholder: '我来补充两句',
       // 回复的评论数据对象
-      parentComment: ''
+      parentComment: '',
+      commentId: ''
     }
   },
   created () {
@@ -178,8 +192,10 @@ export default {
     })
   },
   methods: {
+    ...mapMutations(['SETPROPVALUE']),
     // 加载事件
     onLoad () {
+      // 加载评论列表
       commentsDetail({
         id: this.$route.params.id,
         start: this.start,
@@ -249,6 +265,57 @@ export default {
         // 没登录
         window.console.log('没登录')
       }
+    },
+    // 点赞
+    async starArticle (item) {
+      window.console.log('item', item)
+      this.$toast.loading({ duration: 0 })
+      // 判断用户是否登陆
+      await this.$isLogin()
+      // 调用点赞接口
+      if (item) {
+        this.commentId = item.id
+        const res = await starComment({ id: item.id })
+        this.SETPROPVALUE({
+          propName: 'starComments',
+          propValue: res.data.list
+        })
+        window.console.log('res', res)
+      } else {
+        const res = await starArticle({ article: this.$route.params.id })
+        this.SETPROPVALUE({
+          propName: 'starArticles',
+          propValue: res.data.list
+        })
+      }
+
+      this.$toast.clear()
+    }
+  },
+  computed: {
+    ...mapState(['userInfo']),
+    isStar () {
+      // 判断用户是否登陆
+      if (this.userInfo) {
+        // 登陆了,获取当前的文章id 需要转为number
+        const id = +this.$route.params.id
+
+        // 获取用户点赞的id数组
+        const isStar = this.userInfo.starArticles.includes(id)
+        return isStar
+      } else {
+        // 没有登陆
+        return false
+      }
+    },
+    isComment () {
+      if (this.userInfo) {
+        const isComment = this.userInfo.starComments.includes(this.commentId)
+        return isComment
+      } else {
+        // 没有登陆
+        return false
+      }
     }
   }
 }
@@ -259,6 +326,9 @@ export default {
   background-color: @white-color;
   .van-nav-bar__left {
     padding-left: 0;
+  }
+  .actived {
+    color: @main-color !important;
   }
   .iconbtn_nav_back {
     font-size: 44px;
