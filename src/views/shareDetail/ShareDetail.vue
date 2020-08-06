@@ -41,7 +41,7 @@
         <div
           class="comment"
           v-show="item.content !== ''"
-          v-for="item in commentsList"
+          v-for="(item, index) in commentsList"
           :key="item.id"
         >
           <!-- 姓名 点赞区域 -->
@@ -54,11 +54,11 @@
               <span class="time">{{ item.created_at | formatTime }}</span>
             </div>
             <!-- 点赞 -->
-            <div class="zan-box" @click="starArticle(item)">
-              <span>{{ item.star || 0 }}</span>
+            <div class="zan-box" @click="starArticle(item, index)">
+              <span>{{ commentsList[index].star || 0 }}</span>
               <i
                 class="iconfont iconbtn_dianzan_small_nor"
-                :class="{ actived: isComment }"
+                :class="{ actived: isStarComment(item.id) }"
               ></i>
             </div>
           </div>
@@ -88,18 +88,18 @@
           <div class="input" @click="showPop()">我来补充两句</div>
           <div class="shoucang">
             <i class="iconfont iconbtn_shoucang_nor"></i>
-            234
+            {{ shareDetail.collect }}
           </div>
           <div class="star" @click="starArticle()">
             <i
               class="iconfont iconbtn_dianzan_small_nor"
               :class="{ actived: isStar }"
             ></i>
-            125
+            {{ shareDetail.star }}
           </div>
           <div class="share" @click="showShare = true">
             <i class="iconfont iconbtn_share"></i>
-            998
+            {{ shareDetail.share }}
           </div>
         </div>
       </div>
@@ -155,6 +155,7 @@ import {
   starArticle,
   starComment
 } from '@/api/detail'
+
 import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'ShareDetail',
@@ -181,7 +182,7 @@ export default {
       placeholder: '我来补充两句',
       // 回复的评论数据对象
       parentComment: '',
-      commentId: ''
+      commentsId: ''
     }
   },
   created () {
@@ -189,6 +190,7 @@ export default {
     shareDetail(this.$route.params.id).then(res => {
       this.$avatar(res.data.author)
       this.shareDetail = res.data
+      window.console.log('shareDetail', res)
     })
   },
   methods: {
@@ -201,9 +203,13 @@ export default {
         start: this.start,
         limit: this.limit
       }).then(res => {
-        res.data.list.forEach(item => {
+        res.data.list.forEach((item, index) => {
           // 处理头像
           this.$avatar(item.author)
+          // 去除空数组
+          if (item.content.trim() === '') {
+            res.data.list.splice(index, 1)
+          }
         })
         // 追加数据
         this.commentsList.push(...res.data.list)
@@ -263,30 +269,37 @@ export default {
         }
       } catch {
         // 没登录
-        window.console.log('没登录')
+        this.$toast.fail('没登录呀')
+        this.$router.push(
+          `/login?redirect=shareDetail/${this.$route.params.id}`
+        )
       }
     },
     // 点赞
-    async starArticle (item) {
+    async starArticle (item, index) {
       window.console.log('item', item)
       this.$toast.loading({ duration: 0 })
       // 判断用户是否登陆
       await this.$isLogin()
       // 调用点赞接口
       if (item) {
-        this.commentId = item.id
         const res = await starComment({ id: item.id })
+        window.console.log('starArticle res', res)
+        this.commentsList[index].star = res.data.num
         this.SETPROPVALUE({
           propName: 'starComments',
           propValue: res.data.list
         })
+        window.console.log('commentsList', this.commentsList)
         window.console.log('res', res)
       } else {
         const res = await starArticle({ article: this.$route.params.id })
+        window.console.log('starArticle res', res)
         this.SETPROPVALUE({
           propName: 'starArticles',
           propValue: res.data.list
         })
+        this.shareDetail.star = res.data.num
       }
 
       this.$toast.clear()
@@ -299,22 +312,18 @@ export default {
       if (this.userInfo) {
         // 登陆了,获取当前的文章id 需要转为number
         const id = +this.$route.params.id
-
         // 获取用户点赞的id数组
-        const isStar = this.userInfo.starArticles.includes(id)
-        return isStar
+        return this.userInfo.starArticles.includes(id)
       } else {
         // 没有登陆
         return false
       }
     },
-    isComment () {
-      if (this.userInfo) {
-        const isComment = this.userInfo.starComments.includes(this.commentId)
-        return isComment
-      } else {
-        // 没有登陆
-        return false
+    isStarComment () {
+      return commentId => {
+        if (this.userInfo) {
+          return this.userInfo.starComments.includes(commentId)
+        }
       }
     }
   }
