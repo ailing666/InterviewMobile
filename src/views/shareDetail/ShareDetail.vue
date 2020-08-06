@@ -99,7 +99,7 @@
           </div>
           <div class="share" @click="showShare = true">
             <i class="iconfont iconbtn_share"></i>
-            {{ shareDetail.share }}
+            {{ shareDetail.share || 0 }}
           </div>
         </div>
       </div>
@@ -182,15 +182,19 @@ export default {
       placeholder: '我来补充两句',
       // 回复的评论数据对象
       parentComment: '',
-      commentsId: ''
+      commentsId: '',
+      num: 0
     }
   },
   created () {
+    // 在页面刷新时将vuex里的信息保存到sessionStorage里
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.setItem('store', JSON.stringify(this.$store.state))
+    })
     // 将id作为参数调用接口
     shareDetail(this.$route.params.id).then(res => {
       this.$avatar(res.data.author)
       this.shareDetail = res.data
-      window.console.log('shareDetail', res)
     })
   },
   methods: {
@@ -209,6 +213,7 @@ export default {
           // 去除空数组
           if (item.content.trim() === '') {
             res.data.list.splice(index, 1)
+            this.num++
           }
         })
         // 追加数据
@@ -218,7 +223,9 @@ export default {
         //  累加页码
         this.start += this.limit
         //  判断是否结束
-        this.commentsList.length >= res.data.total && (this.finished = true)
+        if (this.commentsList.length + this.num >= res.data.total) {
+          this.finished = true
+        }
       })
     },
     // 弹出评论框
@@ -277,32 +284,30 @@ export default {
     },
     // 点赞
     async starArticle (item, index) {
-      window.console.log('item', item)
       this.$toast.loading({ duration: 0 })
-      // 判断用户是否登陆
-      await this.$isLogin()
-      // 调用点赞接口
-      if (item) {
-        const res = await starComment({ id: item.id })
-        window.console.log('starArticle res', res)
-        this.commentsList[index].star = res.data.num
-        this.SETPROPVALUE({
-          propName: 'starComments',
-          propValue: res.data.list
-        })
-        window.console.log('commentsList', this.commentsList)
-        window.console.log('res', res)
-      } else {
-        const res = await starArticle({ article: this.$route.params.id })
-        window.console.log('starArticle res', res)
-        this.SETPROPVALUE({
-          propName: 'starArticles',
-          propValue: res.data.list
-        })
-        this.shareDetail.star = res.data.num
+      try {
+        // 判断用户是否登陆
+        await this.$isLogin()
+        // 调用点赞接口
+        if (item) {
+          const res = await starComment({ id: item.id })
+          this.commentsList[index].star = res.data.num
+          this.SETPROPVALUE({
+            propName: 'starComments',
+            propValue: res.data.list
+          })
+        } else {
+          const res = await starArticle({ article: this.$route.params.id })
+          this.SETPROPVALUE({
+            propName: 'starArticles',
+            propValue: res.data.list
+          })
+          this.shareDetail.star = res.data.num
+        }
+        this.$toast.clear()
+      } catch {
+        this.$router.push('/login')
       }
-
-      this.$toast.clear()
     }
   },
   computed: {
@@ -333,6 +338,7 @@ export default {
 <style lang="less">
 .shareDetail {
   background-color: @white-color;
+  box-sizing: border-box;
   .van-nav-bar__left {
     padding-left: 0;
   }
@@ -345,6 +351,7 @@ export default {
   .top-box {
     background-color: @white-color;
     padding: 15px;
+
     .title {
       font-size: 18px;
       font-weight: 500;
@@ -400,6 +407,8 @@ export default {
     margin-top: 10px;
     background-color: @white-color;
     padding: 26px 15px;
+    padding-bottom: 85px;
+
     .title {
       font-size: 18px;
       font-weight: 500;
@@ -450,7 +459,7 @@ export default {
     box-sizing: border-box;
     padding: 10px 15px 0;
     background-color: @white-color;
-    width: 100%;
+    width: 100vw;
     justify-content: space-between;
     .input {
       height: 34px;
@@ -466,6 +475,7 @@ export default {
     }
     div:not(.input) {
       font-size: 12px;
+      text-align: center;
       color: @subdominant-font-color;
       i {
         display: block;
@@ -480,16 +490,17 @@ export default {
     }
   }
   .input-pop {
-    padding: 25px 15px 0;
+    padding: 25px 15px 0 15px;
     overflow: hidden;
     box-sizing: border-box;
     // 弹出层
     .van-cell::after {
       border-bottom: none;
+      padding: 25px 85px 0 15px;
     }
     .van-field {
       height: 99px;
-      width: 100%;
+      width: 90vw;
       background: @border-color;
       border-radius: 4px;
     }

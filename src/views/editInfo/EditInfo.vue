@@ -5,7 +5,7 @@
       :title="title"
       @onClickLeft="back"
       @onClickRight="submit"
-      rightText="保存"
+      :right-text="isEdit ? '保存' : ''"
     ></AlNavBar>
     <div class="main-box">
       <!-- 输入框 -->
@@ -20,7 +20,8 @@
         :after-read="afterRead"
         v-model="fileList"
         :max-count="1"
-      />
+      >
+      </van-uploader>
     </div>
   </div>
 </template>
@@ -33,14 +34,13 @@ export default {
   data () {
     return {
       inputValue: '',
-      fileList: [{ url: '' }],
+      fileList: [{ url: 'https://cloud-image', isImage: true }],
       title: '',
       avatarId: ''
     }
   },
   created () {
     const propName = this.$route.query.prop
-    window.console.log(propName)
     const titleObj = {
       avatar: '头像',
       nickname: '昵称',
@@ -57,14 +57,16 @@ export default {
 
   computed: {
     ...mapState(['userInfo']),
-    ...mapGetters(['USERAVATAR'])
+    ...mapGetters(['USERAVATAR']),
+    isEdit () {
+      return this.inputValue !== this.userInfo[this.$route.query.prop]
+    }
   },
   methods: {
     ...mapMutations(['SETPROPVALUE']),
     // 上传成功后的回调函数
     afterRead (fileInfo) {
       uploadFile(fileInfo.file).then(res => {
-        window.console.log(res)
         this.avatarId = res.data[0].id
       })
     },
@@ -73,19 +75,25 @@ export default {
     },
     // 提交
     submit () {
+      if (this.isEdit === false) return
       var propName = this.$route.query.prop
       var propValue = this.inputValue
       // 生成一个动态对象
       const data = {}
       // 向data对象中动态添加键值对
       data[propName] = propName !== 'avatar' ? propValue : this.avatarId
+      window.console.log('data', data)
+      if (data.avatar === '') {
+        this.$toast.fail('请修改头像哦')
+        return
+      }
       editUserInfo(data).then(res => {
         this.$toast.loading({ duration: 0 })
         this.$toast.success('修改成功')
         if (propName !== 'avatar') {
           this.SETPROPVALUE({ propName, propValue })
         } else {
-          window.console.log('实际传的', res.data)
+          window.console.log('头像', res.data)
           this.SETPROPVALUE({
             propName,
             propValue: res.data.avatar
@@ -111,6 +119,17 @@ export default {
       background-color: @bg-color;
       border-radius: 8px;
     }
+  }
+  .preview-cover {
+    position: absolute;
+    box-sizing: border-box;
+    bottom: 0;
+    width: 100%;
+    padding: 4px;
+    color: #95f;
+    font-size: 12px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
   }
 }
 </style>

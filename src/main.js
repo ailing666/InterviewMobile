@@ -11,7 +11,6 @@ import 'vant/lib/index.css'
 import 'amfe-flexible'
 // 导入字体图标
 import '@/styles/iconfont.css'
-import '@/styles/common.css'
 // 自己的初始化样式
 import '@/styles/var.less'
 // 导入moment

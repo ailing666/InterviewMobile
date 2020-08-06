@@ -5,7 +5,13 @@
       <div class="user-data">
         <AlCell title="头像" @click="toEdit('avatar')">
           <template>
-            <img class="avatar" :src="USERAVATAR" alt="" />
+            <div
+              v-if="USERAVATAR === 'http://localhost:1337null'"
+              class="avatar-text"
+            >
+              用户
+            </div>
+            <img v-else class="avatar" :src="USERAVATAR" alt="" />
           </template>
         </AlCell>
       </div>
@@ -158,6 +164,18 @@ export default {
       margin: 20px 0 10px 0;
       border-radius: 10px;
       overflow: hidden;
+      .van-cell__value {
+        flex: 0.3;
+        .avatar-text {
+          height: 50px;
+          width: 50px;
+          background-color: #95f;
+          border-radius: 50%;
+          font-size: 16px;
+          text-align: center;
+          line-height: 50px;
+        }
+      }
 
       .avatar {
         width: 40px;

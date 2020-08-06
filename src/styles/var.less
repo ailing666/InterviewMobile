@@ -22,3 +22,28 @@
 @white-color: #fff;
 // 次要文字
 @minor-font-color: #b4b4bd;
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: @bg-color;
+}
+* {
+  // padding不会撑开
+  box-sizing: border-box;
+}
+// 超出隐藏
+.over-hidden-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.over-hidden-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}

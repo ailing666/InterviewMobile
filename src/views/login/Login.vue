@@ -73,7 +73,7 @@ export default {
           this.$router.push(`${this.$route.query.redirect}`)
         } else {
           // 登录失败去发现页
-          this.$router.push('/finder')
+          this.$router.push('/find')
         }
       })
     },

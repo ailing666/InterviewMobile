@@ -34,6 +34,7 @@ export default {
     height: 55px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
   }
   .iconfont {
     font-size: 21px;

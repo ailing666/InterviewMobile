@@ -12,8 +12,14 @@
           <p>{{ userInfo.intro }}</p>
         </div>
         <!-- 右边用户头像 -->
-        <div>
-          <img @click="GoUserInfo" class="avatar" :src="USERAVATAR" alt="" />
+        <div @click="GoUserInfo">
+          <div
+            v-if="USERAVATAR === 'http://localhost:1337null'"
+            class="avatar-text"
+          >
+            用户
+          </div>
+          <img v-else class="avatar" :src="USERAVATAR" alt="" />
         </div>
       </div>
       <!-- 数据区 -->
@@ -154,6 +160,15 @@ export default {
           opacity: 0.7;
           font-size: 12px;
         }
+      }
+      .avatar-text {
+        height: 50px;
+        width: 50px;
+        background-color: #95f;
+        border-radius: 50%;
+        font-size: 16px;
+        text-align: center;
+        line-height: 50px;
       }
       .avatar {
         height: 50px;
