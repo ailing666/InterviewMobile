@@ -97,7 +97,7 @@
             ></i>
             {{ shareDetail.star }}
           </div>
-          <div class="share" @click="showShare = true">
+          <div class="share" @click="showSharePop">
             <i class="iconfont iconbtn_share"></i>
             {{ shareDetail.share || 0 }}
           </div>
@@ -123,26 +123,29 @@
     </van-popup>
     <!-- 分享弹出层 -->
     <van-popup v-model="showShare">
-      <div class="share-box">
+      <div class="share-box" v-if="!popImgUrl" ref="shareBox">
         <div class="text">
           长按图片下载并分享
         </div>
         <div class="share-content-box">
           <div class="title">
-            拿到百度音乐的offer后，我总结了面试产品实习的几点经验
+            {{ shareDetail.title }}
           </div>
           <div class="user-box">
-            <img src="../../assets/logo.png" alt="" />
-            <span>热爱生活</span>
+            <img :src="USERAVATAR" alt="" />
+            <span>{{ userInfo.nickname }}</span>
           </div>
           <div class="content">
-            先说一下我的基本情况，本人是北京大学前沿交叉学院数据科学专业研一学生，本科在兰州大学信息安全专业。之所以选择走产品而不是技术，代码能力马马虎虎，而且对编程不感兴趣，最关键的是我性格比较外向，比起每天闷头敲代码，更喜欢和人打交道。于是乎，我开始从各种渠道了解产品经理的前世今生，从《人人都是产品经理》这本书和人人都是产品经理社区，再到知乎，了解到了很多笼统的概念，但是感觉如果没有亲身经历，理论和框架就显得很空洞，而且产品不像技术，门槛相对略低，所以更需要实习的经历，再加上本科的时候从未有过实习经历，所以我很迫切的想找一份产品实习。在面试了滴滴出行、回家吃饭和百度音乐之后，拿到了后面两家的Offer，最终选择了百度音乐。
+            {{ shareDetail.contentText }}
           </div>
-          <img class="logo" src="../../assets/logo.png" alt="" />
-          <img class="code" src="../../assets/logo.png" alt="" />
+          <img class="logo" src="@/assets/img_share_logo@2x.png" alt="" />
+          <!-- 二维码图片 -->
+          <img class="code" :src="codeUrl" alt="" />
           <div class="direction">长按识别二维码查看原文</div>
         </div>
       </div>
+      <!-- 有图就显示图片 -->
+      <img v-else :src="popImgUrl" alt="" class="share-img" />
     </van-popup>
   </div>
 </template>
@@ -155,8 +158,11 @@ import {
   starArticle,
   starComment
 } from '@/api/detail'
-
-import { mapState, mapMutations } from 'vuex'
+// 导入 二维码模块
+import QRCode from 'qrcode'
+// 导入 截图模块
+import html2canvas from 'html2canvas'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 export default {
   name: 'ShareDetail',
   data () {
@@ -183,7 +189,11 @@ export default {
       // 回复的评论数据对象
       parentComment: '',
       commentsId: '',
-      num: 0
+      num: 0,
+      // 二维码地址
+      codeUrl: '',
+      // 弹框图片地址
+      popImgUrl: ''
     }
   },
   created () {
@@ -196,6 +206,12 @@ export default {
       this.$avatar(res.data.author)
       this.shareDetail = res.data
     })
+  },
+  // dom加载完毕
+  async mounted () {
+    // 使用QRCode生成二维码
+    const codeUrl = await QRCode.toDataURL(window.location.href)
+    this.codeUrl = codeUrl
   },
   methods: {
     ...mapMutations(['SETPROPVALUE']),
@@ -308,10 +324,33 @@ export default {
       } catch {
         this.$router.push('/login')
       }
+    },
+    // 分享框
+    async showSharePop () {
+      // 判断是否登陆
+      await this.$isLogin()
+      // 弹出分享框
+      this.showShare = true
+      // 滚到顶部,解决有滚动距离时截图留白
+      window.scrollTo(0, 0)
+      // 保证一定能取到
+      this.$nextTick(async () => {
+        // 生成弹框截图
+        const canvas = await html2canvas(this.$refs.shareBox, {
+          // 解决图片不显示问题
+          allowTaint: true,
+          useCORS: true
+        })
+        // 转为 url
+        const popImgUrl = canvas.toDataURL()
+        // 保存url地址
+        this.popImgUrl = popImgUrl
+      })
     }
   },
   computed: {
     ...mapState(['userInfo']),
+    ...mapGetters(['USERAVATAR']),
     isStar () {
       // 判断用户是否登陆
       if (this.userInfo) {
@@ -519,7 +558,7 @@ export default {
     background-position-x: 0;
     background-position-y: 0;
     padding: 0 15px 15px;
-    // background-image: url('../../assets/ios3x_img_share_bj@3x.png');
+    background-image: url('../../assets/img_share_bj@2x.png');
     display: flex;
     flex-direction: column;
     .text {
@@ -564,7 +603,7 @@ export default {
           left: 0;
           height: 25px;
           background-color: @white-color;
-          opacity: 0.9;
+          opacity: 0.5;
           position: absolute;
         }
       }
@@ -585,6 +624,12 @@ export default {
         color: @minor-font-color;
       }
     }
+  }
+  // 分享图片
+  .share-img {
+    width: 311px;
+    height: 553px;
+    display: block;
   }
 }
 </style>
